@@ -1,4 +1,9 @@
+import { getSession } from "../services/users.service"
+
 export function renderHome() {
+
+  const session = getSession();
+
     return `
 <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -6,10 +11,16 @@ export function renderHome() {
     <nav class="hidden items-center gap-3 md:flex">
       <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
         href="/">Home</a>
-      <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-        href="/login">Login</a>
-      <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
-        href="/register">Registrarse</a>
+        ${!session ? `
+          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
+            href="/login">Login</a>
+
+          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
+            href="/register">Registrarse</a>
+        ` : `
+          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
+            href="/dashboard">Dashboard</a>
+        `}
     </nav>
   </div>
 </header>
@@ -27,12 +38,19 @@ export function renderHome() {
         convertirse
         luego en una SPA real con autenticacion, roles, permisos y CRUD de tareas.
       </p>
-      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-        <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-500"
-          href="/login">Iniciar sesion</a>
-        <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-6 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50"
-          href="/register">Crear cuenta</a>
-      </div>
+        ${!session ? `
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-500"
+            href="/login">
+            Iniciar sesion
+          </a>
+
+          <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-6 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50"
+            href="/register">
+            Crear cuenta
+          </a>
+        </div>
+        ` : ""}
     </div>
 
     <section class="rounded-[2rem] border border-blue-100 bg-white p-8 shadow-xl shadow-blue-100/70">

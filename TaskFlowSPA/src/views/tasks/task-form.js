@@ -1,3 +1,6 @@
+import { getTaskById, getTaskFormData, saveTask, updateTask } from "../../services/tasks.service"
+import { getSession } from "../../services/users.service";
+
 export function renderTaskForm() {
   return `
 <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
@@ -20,7 +23,7 @@ export function renderTaskForm() {
     <h1 class="mt-3 text-4xl font-black tracking-tight text-slate-900">Crear o editar tarea</h1>
     <p class="mt-4 max-w-2xl text-slate-600">Vista base para registrar una tarea nueva o actualizar una existente.</p>
 
-    <form class="mt-8 grid gap-5">
+    <form id="task-form" class="mt-8 grid gap-5">
       <div>
         <label class="mb-2 block text-sm font-medium text-slate-700" for="title">Titulo</label>
         <input id="title" type="text" placeholder="Ej. Preparar proyecto final"
@@ -51,8 +54,11 @@ export function renderTaskForm() {
       </div>
 
       <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-        <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500"
-          href="/tasks">Guardar tarea</a>
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">
+          Guardar tarea
+        </button>
         <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50"
           href="/tasks">Cancelar</a>
       </div>
@@ -60,4 +66,94 @@ export function renderTaskForm() {
   </section>
 </main>
 `
+}
+
+
+export async function setupTaskForm() {
+
+  const taskId = await loadTaskForEdit();
+
+  console.log("ID EN SETUP:", taskId);
+
+
+  const form = document.getElementById("task-form");
+
+  form.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    try {
+      const taskData =  getTaskFormData();
+      
+      if (
+        !taskData.title ||
+        !taskData.description ||
+        !taskData.date
+      ){
+      alert("Todos los campos son obligatorios");
+      return;
+    }
+
+      if (taskId) {
+
+      console.log("ACTUALIZANDO");
+
+
+      await updateTask(taskId, taskData);
+      alert("Tarea actualizada");
+
+      } else {
+
+      console.log("CREANDO");
+
+      await saveTask(taskData);
+      alert("Tarea creada");
+      }
+
+      window.history.pushState(null, null, "/tasks");
+      window.dispatchEvent(  new PopStateEvent("popstate"));
+    } 
+    catch (error) {
+      console.error(error);
+      alert("Error al crear tarea");
+    }
+});}
+
+export async function loadTaskForEdit() {
+
+  const params = new URLSearchParams(window.location.search);
+
+  const taskId = params.get("id");
+
+  if (!taskId) {
+    return null;
+  }
+
+  const task = await getTaskById(taskId);
+
+  const session = getSession();
+
+  if (
+    session.role !== "ADMIN" &&
+    task.userId !== session.id
+  ) {
+    alert("No tienes permisos");
+
+    window.history.pushState(null, null, "/tasks");
+    window.dispatchEvent(
+      new PopStateEvent("popstate")
+    );
+
+    return null;
+  }
+
+  document.getElementById("title").value = task.title;
+
+  document.getElementById("description").value = task.description;
+
+  document.getElementById("status").value = task.status;
+
+  document.getElementById("date").value = task.date;
+
+  return taskId;
 }

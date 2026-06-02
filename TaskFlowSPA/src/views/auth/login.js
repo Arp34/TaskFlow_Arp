@@ -1,3 +1,5 @@
+import { getLoginFormData, loginUser } from "../../services/users.service"
+
 export function renderLogin() {
     return `
 <main class="grid min-h-screen lg:grid-cols-[1fr_0.95fr]">
@@ -15,21 +17,20 @@ export function renderLogin() {
         <p class="mt-4 text-slate-600">Ingresa a tu espacio de trabajo y continua organizando tus tareas.</p>
       </div>
 
-      <form class="mt-8 grid gap-5">
+      <form id="login-form" class="mt-8 grid gap-5">
         <div>
-          <label class="mb-2 block text-sm font-medium text-slate-700" for="email">Correo</label>
-          <input id="email" type="email" placeholder="usuario@taskflow.com"
+          <label class="mb-2 block text-sm font-medium text-slate-700" for="login-email">Correo</label>
+          <input id="login-email" type="email" placeholder="usuario@taskflow.com"
             class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
         </div>
         <div>
-          <label class="mb-2 block text-sm font-medium text-slate-700" for="password">Contrasena</label>
-          <input id="password" type="password" placeholder="Ingresa tu contrasena"
+          <label class="mb-2 block text-sm font-medium text-slate-700" for="login-password">Contrasena</label>
+          <input id="login-password" type="password" placeholder="Ingresa tu contrasena"
             class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
         </div>
-        <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500"
-          href="/dashboard">
-          Entrar al dashboard
-        </a>
+        <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">
+          Iniciar sesion
+        </button>
       </form>
     </div>
   </section>
@@ -47,4 +48,23 @@ export function renderLogin() {
   </section>
 </main>
     `
+}
+
+export function setupLogin() {
+
+  const form = document.querySelector("#login-form");
+
+  form.addEventListener("submit", async (event) => {
+    
+    event.preventDefault();
+
+    try {
+      const loginData = getLoginFormData();
+      await loginUser(loginData);
+    } 
+    catch (error) {
+      console.error("Error al iniciar sesion:", error);
+      alert("Ocurrio un error al iniciar sesion. Por favor, intenta nuevamente.");
+    }
+  });
 }

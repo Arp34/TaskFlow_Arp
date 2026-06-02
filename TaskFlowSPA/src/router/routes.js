@@ -1,11 +1,11 @@
-import { renderLogin } from "../views/auth/login";
+import { renderLogin, setupLogin } from "../views/auth/login";
 import { renderNotFound } from "../views/auth/not-found";
 import { renderRegister, setupRegister } from "../views/auth/register";
 import { renderHome } from "../views/home";
-import { renderTaskForm } from "../views/tasks/task-form";
-import { rendertasks } from "../views/tasks/tasks";
+import { renderTaskForm, setupTaskForm } from "../views/tasks/task-form";
+import { rendertasks, setupTasks } from "../views/tasks/tasks";
 import { renderadmin } from "../views/admin/admin";
-import { renderDashboard } from "../views/app/dashboard";
+import { renderDashboard, setupDashboard } from "../views/app/dashboard";
 import { renderProfile } from "../views/users/profile";
 
 export const routes = {
@@ -15,19 +15,24 @@ export const routes = {
     },
     "/login": {
         render: renderLogin,
+        setup: setupLogin,
+        onlyGuests: true,
         isAuthorized: false
     },
     "/register": {
         render: renderRegister,
         setup: setupRegister,
+        onlyGuests: true,
         isAuthorized: false
     },
     "/task-form": {
         render: renderTaskForm,
+        setup: setupTaskForm,
         isAuthorized: false
     },
     "/tasks": {
         render: rendertasks,
+        setup: setupTasks,
         isAuthorized: true
     },
     "/admin": {
@@ -37,6 +42,7 @@ export const routes = {
     },
     "/dashboard": {
         render: renderDashboard,
+        setup: setupDashboard,
         isAuthorized: true
     },
     "/profile": {

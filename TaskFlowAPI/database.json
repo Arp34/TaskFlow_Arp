@@ -8,9 +8,52 @@
       "role": [
         "ADMIN"
       ],
-      "id": "mlXUhqYG9hg"
+      "id": "Gel1RutXSR0"
+    },
+    {
+      "name": "arp",
+      "lastname": "1",
+      "email": "arp@gmail.com",
+      "password": "12345",
+      "role": [
+        "USER"
+      ],
+      "id": "c38w0GefwSY"
     }
   ],
-  "tasks": [],
+  "tasks": [
+    {
+      "title": "1",
+      "description": "1",
+      "status": "Pendiente",
+      "date": "",
+      "userId": "Gel1RutXSR0",
+      "id": "sGPJbHIAuoU"
+    },
+    {
+      "title": "213123",
+      "description": "123",
+      "status": "Pendiente",
+      "date": "2026-06-25",
+      "userId": "Gel1RutXSR0",
+      "id": "wh6K1aNO718"
+    },
+    {
+      "title": "121",
+      "description": "1231",
+      "status": "Pendiente",
+      "date": "2026-06-01",
+      "userId": "c38w0GefwSY",
+      "id": "1GI7sPspX84"
+    },
+    {
+      "title": "123123",
+      "description": "213123",
+      "status": "Completada",
+      "date": "2026-06-01",
+      "userId": "c38w0GefwSY",
+      "id": "aP7aDNKeH_M"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

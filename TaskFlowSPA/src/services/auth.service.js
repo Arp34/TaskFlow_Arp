@@ -73,6 +73,18 @@ export function getUserFormData() {
 
 export async function createUser(userData) {
 
+    if (
+  !userData.name ||
+  !userData.lastname ||
+  !userData.email ||
+  !userData.password
+) {
+
+  alert("Todos los campos son obligatorios");
+
+  return;
+}
+
   const existingUser = await obtenerUsuarioPorEmail(userData.email);
 
   if (existingUser) {
@@ -87,6 +99,18 @@ export async function createUser(userData) {
 
   const response = await registerUser(newUser)
 
+  if (
+  !userData.name ||
+  !userData.lastname ||
+  !userData.email ||
+  !userData.password
+) {
+
+  alert("Todos los campos son obligatorios");
+
+  return;
+}
+
   if (response) {
 
     alert("Usuario creado exitosamente");
@@ -96,3 +120,4 @@ export async function createUser(userData) {
     renderRoute();
   }
 }
+
