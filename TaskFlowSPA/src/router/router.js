@@ -1,3 +1,4 @@
+import { setupHeader } from "../components/header";
 import { getSession } from "../services/users.service";
 import { notFoundView, routes } from "./routes";
 
@@ -70,6 +71,8 @@ export async function renderRoute() {
     }
 
     app.innerHTML = route.render();
+
+    setupHeader();
 
     if (route.setup) {
         await route.setup();

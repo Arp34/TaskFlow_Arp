@@ -2,7 +2,7 @@ import { renderRoute } from "../router/router";
 import { dbUsers } from "../utils/constant";
 
 
-async function obtenerUsuarios(){
+export async function obtenerUsuarios(){
     const response = await fetch("http://localhost:3000/users");
 
     if (!response.ok) {
@@ -14,7 +14,7 @@ async function obtenerUsuarios(){
 
 //Buscar usuario por email (para login)
 
-async function obtenerUsuarioPorEmail(email){
+export async function obtenerUsuarioPorEmail(email){
     const response = await fetch(`${dbUsers}?email=${email}`);
 
     if (!response.ok) {
@@ -25,9 +25,20 @@ async function obtenerUsuarioPorEmail(email){
     return usuarios.length > 0 ? usuarios[0] : null;
 }
 
+export async function getUserById(id) {
+
+    const response = await fetch(`${dbUsers}/${id}`);
+
+    if (!response.ok) {
+        throw new Error("Error al obtener usuario");
+    }
+
+    return await response.json();
+}
+
 // Leer Formulario Login
 
-function getLoginFormData() {
+export function getLoginFormData() {
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value.trim();
     return { email, password };
@@ -35,7 +46,7 @@ function getLoginFormData() {
 
 //guardar sesion en localStorage
 
-function saveSession(user){
+export function saveSession(user){
     const sessionUser = {
         id: user.id,
         name: user.name,
@@ -48,12 +59,12 @@ function saveSession(user){
 
 // Obtener sesion desde localStorage
 
-function getSession(){
+export function getSession(){
     return JSON.parse(localStorage.getItem("session"));
 }
 
 //cerrar sesion
-function logout(){
+export function logout(){
     localStorage.removeItem("session");
     
     window.history.pushState(null, null, "/login");
@@ -61,7 +72,7 @@ function logout(){
     renderRoute();
 }
 
-async function loginUser(loginData){
+export async function loginUser(loginData){
 
     // 1. Obtener usuario por email
     const user = await obtenerUsuarioPorEmail(loginData.email);
@@ -87,5 +98,39 @@ async function loginUser(loginData){
         renderRoute();
 }
 
+export async function updateUser(id, userData) {
 
-export { obtenerUsuarios, obtenerUsuarioPorEmail, getLoginFormData, saveSession, getSession, logout, loginUser };
+    const oldUser = await getUserById(id);
+
+    const updatedUser = {
+        ...oldUser,
+        ...userData
+    };
+
+    const response = await fetch(`${dbUsers}/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedUser)
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al actualizar el usuario");
+    }
+
+    return await response.json();
+}
+
+export async function deleteUser(id) {
+
+    const response = await fetch(`${dbUsers}/${id}`, {
+        method: "DELETE"
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al eliminar usuario");
+    }
+}
+
+

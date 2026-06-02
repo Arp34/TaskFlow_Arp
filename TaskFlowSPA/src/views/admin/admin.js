@@ -1,20 +1,11 @@
+import { renderHeader } from "../../components/header";
+import { renderRoute } from "../../router/router";
+import { deleteUser, getSession, obtenerUsuarios, updateUser } from "../../services/users.service";
+
 export function renderadmin() {
   return `
-<header class="border-b border-blue-100 bg-white/90 backdrop-blur">
-  <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-    <a class="text-xl font-black text-blue-900" href="/">TaskFlowSPA</a>
-    <nav class="hidden gap-3 md:flex">
-      <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-        href="/dashboard">Dashboard</a>
-      <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-        href="/tasks">Tareas</a>
-      <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-        href="/profile">Perfil</a>
-      <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
-        href="/admin">Admin</a>
-    </nav>
-  </div>
-</header>
+${renderHeader()}
+
 
 <main class="mx-auto max-w-7xl px-6 py-10">
   <section class="rounded-[2rem] bg-blue-600 px-8 py-10 text-white shadow-xl shadow-blue-100">
@@ -38,41 +29,120 @@ export function renderadmin() {
     </article>
 
     <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
+
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold text-slate-900">Usuarios</h2>
-        <span
-          class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-700">Mockup</span>
+        <h2 class="text-xl font-bold text-slate-900">
+          Usuarios
+        </h2>
       </div>
-      <div class="mt-5 space-y-4">
-        <div class="rounded-2xl bg-blue-50 p-4">
-          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p class="font-bold text-slate-900">Ana Torres</p>
-              <p class="text-sm text-slate-500">ana@taskflow.com</p>
-            </div>
-            <div class="flex gap-2">
-              <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">USER</span>
-              <a class="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white"
-                href="/admin">Editar rol</a>
-            </div>
-          </div>
-        </div>
-        <div class="rounded-2xl bg-blue-50 p-4">
-          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p class="font-bold text-slate-900">Carlos Ruiz</p>
-              <p class="text-sm text-slate-500">carlos@taskflow.com</p>
-            </div>
-            <div class="flex gap-2">
-              <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">ADMIN</span>
-              <a class="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white"
-                href="/admin">Editar rol</a>
-            </div>
-          </div>
-        </div>
+
+      <div id="users-container" class="mt-5 space-y-4">
       </div>
+
     </article>
   </section>
 </main>
 `
+}
+
+export async function setupAdmin() {
+
+  const container =
+    document.getElementById("users-container");
+
+  const users =
+    await obtenerUsuarios();
+
+  container.innerHTML = users.map(user => `
+
+    <div class="rounded-2xl bg-blue-50 p-4">
+
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+
+        <div>
+          <p class="font-bold text-slate-900">
+            ${user.name}
+          </p>
+
+          <p class="text-sm text-slate-500">
+            ${user.email}
+          </p>
+        </div>
+
+        <div class="flex gap-2">
+
+          <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">
+            ${user.role}
+          </span>
+
+          <button
+            data-id="${user.id}"
+            data-role="${user.role}"
+            class="change-role-btn rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white">
+            Cambiar rol
+          </button>
+
+          <button
+            data-id="${user.id}"
+            class="delete-user-btn rounded-full border border-red-200 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-white">
+            Eliminar
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `).join("");
+  document.querySelectorAll(".change-role-btn").forEach(button => {
+
+  button.addEventListener("click", async () => {
+
+    const id = button.dataset.id;
+
+    const currentRole = button.dataset.role;
+
+    const newRole = currentRole === "ADMIN" ? "USER" : "ADMIN";
+
+    const session = getSession();
+
+    if (String(id) === String(session.id)) {
+      alert("No puedes cambiar tu propio rol");
+      return;
+    }
+
+    await updateUser(id, {role: newRole});
+
+    alert("Rol actualizado");
+
+    renderRoute();
+  });
+
+  });
+  document.querySelectorAll(".delete-user-btn").forEach(button => {
+    button.addEventListener("click", async () => {
+      const id = button.dataset.id;
+
+      const confirmDelete = confirm("¿Eliminar usuario?");
+
+      if (!confirmDelete) {
+        return;
+      }
+
+      const session = getSession();
+
+      if (String(id) === String(session.id)) {
+        alert("No puedes eliminar tu propia cuenta");
+        return;
+      }
+
+      await deleteUser(id);
+
+      alert("Usuario eliminado");
+
+      renderRoute();
+    });
+
+  });
 }

@@ -1,18 +1,9 @@
+import { renderHeader } from "../../components/header";
+import { deleteUser, getSession, logout, saveSession, updateUser } from "../../services/users.service";
+
 export function renderProfile() {
   return `
-<header class="border-b border-blue-100 bg-white/90 backdrop-blur">
-  <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-    <a class="text-xl font-black text-blue-900" href="/">TaskFlowSPA</a>
-    <nav class="hidden gap-3 md:flex">
-      <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-        href="/dashboard">Dashboard</a>
-      <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-        href="/tasks">Tareas</a>
-      <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
-        href="/profile">Perfil</a>
-    </nav>
-  </div>
-</header>
+${renderHeader()}
 
 <main class="mx-auto max-w-5xl px-6 py-10">
   <section class="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
@@ -24,7 +15,7 @@ export function renderProfile() {
     </aside>
 
     <section class="rounded-[2rem] border border-blue-100 bg-white p-8 shadow-xl shadow-blue-50">
-      <form class="grid gap-5">
+      <form id="profile-form" class="grid gap-5">
         <div>
           <label class="mb-2 block text-sm font-medium text-slate-700" for="name">Nombre</label>
           <input id="name" type="text" value="Ana Torres"
@@ -41,14 +32,77 @@ export function renderProfile() {
             class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
         </div>
         <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-          <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500"
-            href="/profile">Guardar cambios</a>
-          <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50"
-            href="/login">Eliminar mi cuenta</a>
+          <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500"
+            href="/profile">Guardar cambios</button>
+          <button id="delete-account" type="button" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50"
+            href="/login">Eliminar mi cuenta</button>
         </div>
       </form>
     </section>
   </section>
 </main>
 `
+}
+
+export async function setupProfile() {
+
+  const session = getSession();
+
+  document.getElementById("name").value =
+    session.name;
+
+  document.getElementById("profile-email").value =
+    session.email;
+
+  const form = document.getElementById("profile-form");
+
+  form.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    const session = getSession();
+
+    const updatedData = {
+      ...session,
+      name: document.getElementById("name").value.trim(),
+      email: document.getElementById("profile-email").value.trim()
+    };
+
+    const password =
+      document.getElementById("password-new").value.trim();
+
+    if (password) {
+      updatedData.password = password;
+    }
+
+    const updatedUser =
+      await updateUser(session.id, updatedData);
+
+    saveSession(updatedUser);
+
+    alert("Perfil actualizado");
+  });
+
+  document.getElementById("delete-account").addEventListener("click", async () => {
+
+    const confirmDelete = confirm("¿Seguro que deseas eliminar tu cuenta?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      await deleteUser(session.id);
+
+      logout();
+
+    } 
+    
+    catch (error) {
+
+      console.error(error);
+
+      alert("Error al eliminar cuenta");
+    }
+  });
+
 }

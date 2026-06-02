@@ -4,9 +4,9 @@ import { renderRegister, setupRegister } from "../views/auth/register";
 import { renderHome } from "../views/home";
 import { renderTaskForm, setupTaskForm } from "../views/tasks/task-form";
 import { rendertasks, setupTasks } from "../views/tasks/tasks";
-import { renderadmin } from "../views/admin/admin";
+import { renderadmin, setupAdmin } from "../views/admin/admin";
 import { renderDashboard, setupDashboard } from "../views/app/dashboard";
-import { renderProfile } from "../views/users/profile";
+import { renderProfile, setupProfile } from "../views/users/profile";
 
 export const routes = {
     "/": {
@@ -37,6 +37,7 @@ export const routes = {
     },
     "/admin": {
         render: renderadmin,
+        setup: setupAdmin,
         isAuthorized: true,
         allowRoles: ["ADMIN"]
     },
@@ -47,6 +48,7 @@ export const routes = {
     },
     "/profile": {
         render: renderProfile,
+        setup: setupProfile,
         isAuthorized: false
     },
 }

@@ -1,21 +1,11 @@
+import { renderHeader } from "../../components/header";
 import { getTaskById, getTaskFormData, saveTask, updateTask } from "../../services/tasks.service"
 import { getSession } from "../../services/users.service";
 
 export function renderTaskForm() {
   return `
-<header class="border-b border-blue-100 bg-white/90 backdrop-blur">
-  <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-    <a class="text-xl font-black text-blue-900" href="/">TaskFlowSPA</a>
-    <nav class="hidden gap-3 md:flex">
-      <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-        href="/dashboard">Dashboard</a>
-      <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-        href="/tasks">Tareas</a>
-      <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-        href="/profile">Perfil</a>
-    </nav>
-  </div>
-</header>
+${renderHeader()}
+
 
 <main class="mx-auto max-w-5xl px-6 py-10">
   <section class="rounded-[2rem] border border-blue-100 bg-white p-8 shadow-xl shadow-blue-50">
@@ -71,12 +61,21 @@ export function renderTaskForm() {
 
 export async function setupTaskForm() {
 
+  console.log(document.getElementById("task-form"));
+
   const taskId = await loadTaskForEdit();
 
   console.log("ID EN SETUP:", taskId);
 
 
   const form = document.getElementById("task-form");
+
+  console.log("FORM =", form);
+
+  if (!form) {
+    console.log("NO EXISTE EL FORM");
+    return;
+  }
 
   form.addEventListener("submit", async (event) => {
 
@@ -132,11 +131,11 @@ export async function loadTaskForEdit() {
   const task = await getTaskById(taskId);
 
   const session = getSession();
+  const isAdmin = Array.isArray(session?.role)
+    ? session.role.includes("ADMIN")
+    : session?.role === "ADMIN";
 
-  if (
-    session.role !== "ADMIN" &&
-    task.userId !== session.id
-  ) {
+  if (!isAdmin && task.userId !== session.id) {
     alert("No tienes permisos");
 
     window.history.pushState(null, null, "/tasks");
