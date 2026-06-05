@@ -1,30 +1,24 @@
 {
   "users": [
     {
-      "name": "arp",
-      "lastname": "1",
-      "email": "axeldrp3407@gmail.com",
-      "password": "12345",
-      "role": "USER",
-      "id": "c38w0GefwSY"
-    },
-    {
-      "name": "arp1",
-      "lastname": "1",
-      "email": "axeldrp3477@gmail.com",
+      "name": "Pruebas",
+      "lastname": "Probando",
+      "email": "pruebas@gmail.com",
       "password": "12345",
       "role": [
         "ADMIN"
       ],
-      "id": "7k3R0CK45OM"
+      "id": "rSbQDJEGUWc"
     },
     {
-      "name": "axel",
-      "lastname": "drp",
-      "email": "axelpolo3477@gmail.com",
+      "name": "Pruebas",
+      "lastname": "User",
+      "email": "pruebas1@gmail.com",
       "password": "12345",
-      "role": "ADMIN",
-      "id": "3YKyV5ryOf0"
+      "role": [
+        "USER"
+      ],
+      "id": "1_sTpljJfjc"
     }
   ],
   "tasks": [
@@ -33,15 +27,15 @@
       "description": "1231",
       "status": "Pendiente",
       "date": "2026-06-01",
-      "userId": "c38w0GefwSY",
+      "userId": null,
       "id": "1GI7sPspX84"
     },
     {
       "title": "123123",
       "description": "213123",
-      "status": "Completada",
-      "date": "2026-06-01",
-      "userId": "c38w0GefwSY",
+      "status": "En progreso",
+      "date": "2026-06-27",
+      "userId": null,
       "id": "aP7aDNKeH_M"
     },
     {
@@ -49,8 +43,16 @@
       "description": "1",
       "status": "En progreso",
       "date": "2026-07-02",
-      "userId": "3YKyV5ryOf0",
+      "userId": null,
       "id": "ODoJmQVq_OA"
+    },
+    {
+      "title": "probando",
+      "description": "12345",
+      "status": "Pendiente",
+      "date": "2026-06-12",
+      "userId": "1_sTpljJfjc",
+      "id": "XIMEA3G0y2w"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
