@@ -1,4 +1,50 @@
-# TaskFlowSPA
+# TaskFlow SPA
+
+Aplicación de una sola página (SPA) para gestionar tareas, hecha con **JavaScript sin frameworks**. Proyecto formativo de Riwi para entender cómo funciona por dentro una SPA antes de usar un framework.
+
+## Qué hace
+
+- **Registro e inicio de sesión**; la sesión se guarda en `localStorage`.
+- **Router propio con History API**: navegación sin recargar la página, rutas públicas, rutas solo para invitados y rutas protegidas por sesión y por rol (`ADMIN` / `USER`).
+- **Tareas**: crear, listar, editar y eliminar.
+- **Panel de administración** de usuarios y **perfil** de usuario.
+- Código organizado por capas: `router/`, `views/`, `components/`, `services/` y `utils/`.
+
+## Tecnologías
+
+JavaScript (ES Modules) · HTML · Tailwind CSS · Vite · json-server
+
+## Cómo ejecutarlo
+
+Requisitos: Node.js 18 o superior. Hacen falta dos terminales.
+
+**1. API simulada** (queda en `http://localhost:3000`):
+
+```bash
+cd TaskFlowAPI
+npm install
+npx json-server database.json --port 3000
+```
+
+**2. Aplicación:**
+
+```bash
+cd TaskFlowSPA
+npm install
+npm run dev
+```
+
+En `TaskFlowAPI/database.json` hay un usuario de prueba con rol `ADMIN` y otro con rol `USER`.
+
+## Autor
+
+**Axel Ruiz Polo** · Desarrollador Full Stack Junior · [Portafolio](https://arp34.github.io/) · [LinkedIn](https://www.linkedin.com/in/axel-ruiz-polo/)
+
+---
+
+## Documento de diseño
+
+*Planificación inicial del proyecto, escrita antes de construirlo.*
 
 TaskFlowSPA es una aplicacion web tipo SPA (Single Page Application) construida con JavaScript Vanilla, HTML, CSS y Tailwind CSS. Su objetivo es simular un sistema moderno de gestion de tareas y productividad mientras sirve como base practica para aprender arquitectura frontend sin depender de frameworks como React, Vue o Angular.
 
